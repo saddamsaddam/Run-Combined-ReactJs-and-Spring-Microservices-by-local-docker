@@ -96,6 +96,11 @@ services:
 
 ---
 
+
+### **Move to all project root directory where docker-compose.yml exis**
+change directory.
+
+
 ### **Run Everything with One Command**
 ```bash
 docker-compose up --build -d
