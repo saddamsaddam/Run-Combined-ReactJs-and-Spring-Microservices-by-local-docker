@@ -9,6 +9,7 @@ Great! Since my project folders are named **`attendanceMicroService`**, **`React
 /project-root
 │── /ReactJsProject
 │   ├── Dockerfile
+│   ├── nginx.conf
 │   ├── package.json
 │   ├── src/ (React source files)
 │── /userservice
@@ -25,25 +26,56 @@ Great! Since my project folders are named **`attendanceMicroService`**, **`React
 ---
 
 ### **Dockerfiles**
+
+### **Add nginx.conf:- `/ReactJsProject/`**
+
+```nginx.conf
+     server {
+        listen 80;
+        listen [::]:80;
+        server_name localhost;
+    
+        root /usr/share/nginx/html;
+        index index.html;
+    
+        location / {
+            try_files $uri /index.html;
+        }
+    
+        error_page 404 /index.html;
+    
+        location = /50x.html {
+            root /usr/share/nginx/html;
+        }
+    }
+
+
+```
+
 #### **1️⃣ React App - `/ReactJsProject/Dockerfile`**
 ```dockerfile
-# Use Node.js for building React App
-FROM node:22 AS build
+  # Use the official Node.js image as the base image
+  FROM node:22 AS build
+  
+  WORKDIR /app
+  
+  COPY package*.json ./
+  RUN npm install
+  COPY . .
+  RUN npm run build
+  
+  # Use the official Nginx image
+  FROM nginx:alpine
+  
+  # Copy the updated nginx.conf
+  COPY nginx.conf /etc/nginx/conf.d/default.conf
+  
+  # Copy the build output to Nginx html directory
+  COPY --from=build /app/build /usr/share/nginx/html
+  
+  EXPOSE 80
+  CMD ["nginx", "-g", "daemon off;"]
 
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm install
-
-COPY . .
-RUN npm run build
-
-# Use Nginx to serve the built React App
-FROM nginx:alpine
-COPY --from=build /app/build /usr/share/nginx/html
-
-EXPOSE 3000
-CMD ["nginx", "-g", "daemon off;"]
 ```
 
 #### **2️⃣ User Service - `/userservice/Dockerfile`**
