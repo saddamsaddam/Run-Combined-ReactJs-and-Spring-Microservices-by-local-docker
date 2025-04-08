@@ -85,8 +85,7 @@ WORKDIR /app
 
 COPY target/*.jar userservice-0.0.1-SNAPSHOT.jar
 
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "userservice-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "userservice-0.0.1-SNAPSHOT.jar","--server.port=8080"]
 ```
 
 #### **3️⃣ Attendance Microservice - `/attendanceMicroService/Dockerfile`**
@@ -96,8 +95,7 @@ WORKDIR /app
 
 COPY target/*.jar Attendence-0.0.1-SNAPSHOT.jar
 
-EXPOSE 8181
-ENTRYPOINT ["java", "-jar", "Attendence-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "Attendence-0.0.1-SNAPSHOT.jar","--server.port=8181"]
 ```
 
 ---
